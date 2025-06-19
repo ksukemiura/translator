@@ -5,10 +5,10 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { text, targetLanguage } = await req.json();
+  const { text, targetLanguage, model } = await req.json();
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-4.1-mini',
+    model: model,
     messages: [
       {
         role: 'system',

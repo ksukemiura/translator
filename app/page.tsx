@@ -6,6 +6,7 @@ export default function Home() {
   const [text, setText] = useState("");
   const [translatedText, setTranslatedText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("Japanese");
+  const [model, setModel] = useState("gpt-4.1-nano");
 
   const translate = async () => {
     const res = await fetch("/api/translate", {
@@ -13,7 +14,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ text, targetLanguage }),
+      body: JSON.stringify({ text, targetLanguage, model }),
     });
 
     const data = await res.json();
@@ -42,6 +43,15 @@ export default function Home() {
         </div>
       </div>
       <div className="controls-container">
+        <select
+          className="select"
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
+        >
+          <option value="gpt-4.1">gpt-4.1</option>
+          <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+          <option value="gpt-4.1-nano">gpt-4.1-nano</option>
+        </select>
         <select
           className="select"
           value={targetLanguage}
