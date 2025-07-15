@@ -42,6 +42,16 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, [translate]);
 
+  async function copyTranslation() {
+    if (translation) {
+      try {
+        await navigator.clipboard.writeText(translation);
+      } catch (error) {
+        console.error("Failed to copy translation to clipboard:", error);
+      }
+    }
+  }
+
   return (
     <main className={styles.main}>
       <h1 className={styles.title}>Translator</h1>
@@ -73,6 +83,13 @@ export default function Home() {
             </option>
           ))}
         </select>
+        <button
+          className={styles.button}
+          onClick={copyTranslation}
+          disabled={!translation}
+        >
+          Copy Translation
+        </button>
       </div>
     </main>
   );
