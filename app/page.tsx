@@ -12,11 +12,11 @@ export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(languages[0]);
   const [translation, setTranslation] = useState("");
-  const copyTranslation = useCallback(() => {
+  async function copyTranslation() {
     if (translation) {
-      navigator.clipboard.writeText(translation);
+      await navigator.clipboard.writeText(translation);
     }
-  }, [translation]);
+  }
   const debounceDelay = 300; // milliseconds
 
   const translate = useCallback(async () => {
