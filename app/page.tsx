@@ -8,12 +8,12 @@ const LANGUAGES = [
   "Japanese",
   "Chinese",
 ];
+const DEBOUNCE_DELAY = 300; // milliseconds
 
 export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(LANGUAGES[0]);
   const [translation, setTranslation] = useState("");
-  const debounceDelay = 300; // milliseconds
 
   const translate = useCallback(async () => {
     if (!text.trim()) {
@@ -38,7 +38,7 @@ export default function Home() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       translate();
-    }, debounceDelay);
+    }, DEBOUNCE_DELAY);
 
     return () => clearTimeout(timeoutId);
   }, [translate]);
