@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "./page.module.css";
 
 export default function Home() {
   const languages = [
@@ -28,24 +29,27 @@ export default function Home() {
   }
 
   return (
-    <>
-      <h1>Translator</h1>
-      <div>
+    <main className={styles.main}>
+      <h1 className={styles.title}>Translator</h1>
+      <div className={styles.textareas}>
         <textarea
+          className={styles.textarea}
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Enter text to translate"
         >
         </textarea>
         <textarea
+          className={styles.textarea}
           value={translation}
           placeholder="Translation"
           readOnly
         >
         </textarea>
       </div>
-      <div>
+      <div className={styles.controls}>
         <select
+          className={styles.select}
           value={targetLanguage}
           onChange={(e) => setTargetLanguage(e.target.value)}
         >
@@ -56,12 +60,13 @@ export default function Home() {
           ))}
         </select>
         <button
+          className={styles.button}
           type="button"
           onClick={handleClick}
-        >
-          Translate
-        </button>
+          >
+            Translate
+          </button>
       </div>
-    </>
+    </main>
   );
 }
