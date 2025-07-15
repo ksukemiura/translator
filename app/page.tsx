@@ -14,7 +14,11 @@ export default function Home() {
   const [translation, setTranslation] = useState("");
   async function copyTranslation() {
     if (translation) {
-      await navigator.clipboard.writeText(translation);
+      try {
+        await navigator.clipboard.writeText(translation);
+      } catch (error) {
+        console.error("Failed to copy translation to clipboard:", error);
+      }
     }
   }
   const debounceDelay = 300; // milliseconds
