@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
+const LANGUAGES = [
+  "English",
+  "Japanese",
+  "Chinese",
+];
+const DEBOUNCE_DELAY = 300; // milliseconds
+
 export default function Home() {
-  const languages = [
-    "English",
-    "Japanese",
-    "Chinese",
-  ];
   const [text, setText] = useState("");
-  const [targetLanguage, setTargetLanguage] = useState(languages[0]);
+  const [targetLanguage, setTargetLanguage] = useState(LANGUAGES[0]);
   const [translation, setTranslation] = useState("");
-  const debounceDelay = 300; // milliseconds
 
   const translate = useCallback(async () => {
     if (!text.trim()) {
@@ -37,7 +38,7 @@ export default function Home() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       translate();
-    }, debounceDelay);
+    }, DEBOUNCE_DELAY);
 
     return () => clearTimeout(timeoutId);
   }, [translate]);
@@ -77,7 +78,7 @@ export default function Home() {
           value={targetLanguage}
           onChange={(e) => setTargetLanguage(e.target.value)}
         >
-          {languages.map((language) => (
+          {LANGUAGES.map((language) => (
             <option key={language} value={language}>
               {language}
             </option>
