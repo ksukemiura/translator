@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -12,8 +12,14 @@ export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(languages[0]);
   const [translation, setTranslation] = useState("");
+  const debounceDelay = 300; // milliseconds
 
-  async function handleClick() {
+  const translate = useCallback(async () => {
+    if (!text.trim()) {
+      setTranslation("");
+      return;
+    }
+
     const response = await fetch("/api/translate", {
       method: "POST",
       headers: {
@@ -26,7 +32,15 @@ export default function Home() {
     });
     const data = await response.json();
     setTranslation(data.translation);
-  }
+  }, [text, targetLanguage]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      translate();
+    }, debounceDelay);
+
+    return () => clearTimeout(timeoutId);
+  }, [translate]);
 
   return (
     <main className={styles.main}>
@@ -59,13 +73,6 @@ export default function Home() {
             </option>
           ))}
         </select>
-        <button
-          className={styles.button}
-          type="button"
-          onClick={handleClick}
-          >
-            Translate
-          </button>
       </div>
     </main>
   );
