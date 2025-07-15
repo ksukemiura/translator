@@ -12,15 +12,6 @@ export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(languages[0]);
   const [translation, setTranslation] = useState("");
-  async function copyTranslation() {
-    if (translation) {
-      try {
-        await navigator.clipboard.writeText(translation);
-      } catch (error) {
-        console.error("Failed to copy translation to clipboard:", error);
-      }
-    }
-  }
   const debounceDelay = 300; // milliseconds
 
   const translate = useCallback(async () => {
@@ -50,6 +41,16 @@ export default function Home() {
 
     return () => clearTimeout(timeoutId);
   }, [translate]);
+
+  async function copyTranslation() {
+    if (translation) {
+      try {
+        await navigator.clipboard.writeText(translation);
+      } catch (error) {
+        console.error("Failed to copy translation to clipboard:", error);
+      }
+    }
+  }
 
   return (
     <main className={styles.main}>
