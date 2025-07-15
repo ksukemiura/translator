@@ -12,6 +12,11 @@ export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(languages[0]);
   const [translation, setTranslation] = useState("");
+  const copyTranslation = useCallback(() => {
+    if (translation) {
+      navigator.clipboard.writeText(translation);
+    }
+  }, [translation]);
   const debounceDelay = 300; // milliseconds
 
   const translate = useCallback(async () => {
@@ -73,6 +78,13 @@ export default function Home() {
             </option>
           ))}
         </select>
+        <button
+          className={styles.button}
+          onClick={copyTranslation}
+          disabled={!translation}
+        >
+          Copy Translation
+        </button>
       </div>
     </main>
   );
