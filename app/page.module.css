@@ -21,6 +21,12 @@
   margin-bottom: 1rem;
 }
 
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
 .textarea {
   width: 50%;
   height: 200px;
@@ -55,6 +61,21 @@
 }
 
 .button:hover {
+  background-color: #005bb5;
+}
+
+.recordButton {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  background-color: #0070f3;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.recordButton:hover {
   background-color: #005bb5;
 }
 
