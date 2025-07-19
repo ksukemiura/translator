@@ -58,7 +58,7 @@ async function transcribe(audio: File): Promise<string> {
   try {
     file = await ai.files.upload({
       file: audio,
-      config: { mimeType: "audio/wav" },
+      config: { mimeType: audio.type || "audio/wav" },
     });
 
     if (!file.uri) {

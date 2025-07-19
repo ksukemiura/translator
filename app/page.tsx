@@ -68,7 +68,7 @@ export default function Home() {
       });
 
       mediaRecorder.addEventListener("stop", async () => {
-        const audio = new Blob(audioChunksRef.current, { type: "audio/wav" });
+        const audio = new Blob(audioChunksRef.current, { type: mediaRecorderRef.current?.mimeType || "audio/webm" });
         const transcription = await transcribe(audio);
         setText(transcription);
         stream.getTracks().forEach(track => track.stop());
