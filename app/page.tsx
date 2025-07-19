@@ -98,7 +98,17 @@ export default function Home() {
         body: formData,
       });
 
+      if (!response.ok) {
+        console.error(`Transcription API error: ${response.status} ${response.statusText}`);
+        throw new Error("Failed to transcribe audio: API returned an error.");
+      }
+
       const data = await response.json();
+
+      if (!data.transcription) {
+        console.error("Transcription API response is missing 'transcription' field:", data);
+        throw new Error("Failed to transcribe audio: Missing 'transcription' in response.");
+      }
       return data.transcription;
     } catch (error) {
       console.error("Failed to transcribe audio:", error);
