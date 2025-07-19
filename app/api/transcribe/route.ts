@@ -54,8 +54,9 @@ async function transcribe(audio: File): Promise<string> {
   };
   const model = "gemini-2.5-flash";
 
+  let file;
   try {
-    const file = await ai.files.upload({
+    file = await ai.files.upload({
       file: audio,
       config: { mimeType: "audio/wav" },
     });
@@ -79,10 +80,6 @@ async function transcribe(audio: File): Promise<string> {
       contents,
     });
 
-    if (file.name) {
-      await ai.files.delete({ name: file.name });
-    }
-
     const text = response.candidates?.[0].content?.parts?.[0].text;
     if (!text) {
       throw new Error("Transcription failed: no text returned");
@@ -92,5 +89,9 @@ async function transcribe(audio: File): Promise<string> {
   } catch (error) {
     console.error("Failed to transcribe audio:", error);
     throw error;
+  } finally {
+    if (file?.name) {
+      await ai.files.delete({ name: file.name });
+    }
   }
 }
