@@ -30,8 +30,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 }
 
 async function transcribe(audio: File): Promise<string> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("API key is missing or invalid. Please set GEMINI_API_KEY in the environment variables.");
+  }
   const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
+    apiKey,
   });
   const config = {
     thinkingConfig: {
