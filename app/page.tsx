@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
 
 const LANGUAGES = [
@@ -14,6 +14,9 @@ export default function Home() {
   const [text, setText] = useState("");
   const [targetLanguage, setTargetLanguage] = useState(LANGUAGES[0]);
   const [translation, setTranslation] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   const translate = useCallback(async () => {
     if (!text.trim()) {
@@ -53,6 +56,66 @@ export default function Home() {
     }
   }
 
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.addEventListener("dataavailable", (event) => {
+        audioChunksRef.current.push(event.data);
+      });
+
+      mediaRecorder.addEventListener("stop", async () => {
+        const audio = new Blob(audioChunksRef.current, { type: mediaRecorderRef.current?.mimeType || "audio/webm" });
+        const transcription = await transcribe(audio);
+        setText(transcription);
+        stream.getTracks().forEach(track => track.stop());
+      });
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error("Error starting recording:", error);
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  }
+
+  async function transcribe(audio: Blob): Promise<string> {
+    try {
+      const formData = new FormData();
+      formData.append("audio", audio, "recording.wav");
+
+      const response = await fetch("/api/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        console.error(`Transcription API error: ${response.status} ${response.statusText}`);
+        throw new Error("Failed to transcribe audio: API returned an error.");
+      }
+
+      const data = await response.json();
+
+      if (!data.transcription) {
+        console.error("Transcription API response is missing 'transcription' field:", data);
+        throw new Error("Failed to transcribe audio: Missing 'transcription' in response.");
+      }
+      return data.transcription;
+    } catch (error) {
+      console.error("Failed to transcribe audio:", error);
+      throw error;
+    }
+  }
+
   return (
     <main className={styles.main}>
       <h1 className={styles.title}>Translator</h1>
@@ -73,6 +136,12 @@ export default function Home() {
         </textarea>
       </div>
       <div className={styles.controls}>
+        <button
+          className={styles.button}
+          onClick={isRecording ? stopRecording : startRecording}
+        >
+          {isRecording ? "Stop Recording" : "Start Recording" }
+        </button>
         <select
           className={styles.select}
           value={targetLanguage}
