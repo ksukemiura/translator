@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
 
 const LANGUAGES = [
-  "English",
   "Japanese",
+  "English",
   "Chinese",
 ];
 const DEBOUNCE_DELAY = 300; // milliseconds
